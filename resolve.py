@@ -27,7 +27,6 @@ def _extract(item:Item, e):
     item.item_name = text
     a = title.a
     item.item_link = "https:" + a.attrs['href']
-    print(item.item_link)
 
     price = c[1]
     after_discount = [k for k in price.contents  if str(k).strip()][0]
@@ -40,14 +39,14 @@ def _extract(item:Item, e):
 
     return item
 
-def resolve(item:Item):
+def resolve(item:Item)->list:
     logging.warn("resolve " + item.card)
     soup = BeautifulSoup(item.html, 'html.parser')
     elements = soup.find_all('li', class_='item-wrap')
     elements = tuple(_dewrap(e) for e in elements)
     choices = [_extract(item, e) for e in elements]
-    #for c in choices:
-        #print(c.item_name, c.item_price)
+    choices.sort(key=lambda i: i.item_price)
+    return choices
 
 if __name__ == '__main__':
     i = Item()
