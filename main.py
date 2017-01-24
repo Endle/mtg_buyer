@@ -16,25 +16,31 @@ def _get_url(item:Item)->str:
     ]
     return "".join(url_component)
 
-CARD_NAMES = ["背心", "文胸", "打底"]
-SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
+def main():
+    import selenium_browser
+    CARD_NAMES = ["背心", "文胸", "打底"]
+    SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
 
-TEMP_FOLDER = "/Users/lizhenbo/Downloads/"
-TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
+    TEMP_FOLDER = "/Users/lizhenbo/Downloads/"
+    TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
 
-import selenium_browser
+    ITEMS = []
 
-for c in CARD_NAMES:
-    for s in SHOP_LINKS:
-        i = Item()
-        i.card = c
-        i.shop_link = s
-        i.search_link = _get_url(i)
-        i.html = selenium_browser.fetch(i.search_link)
+    for s in SHOP_LINKS[:1]:
+        for c in CARD_NAMES:
+            i = Item()
+            i.card = c
+            i.shop_link = s
+            i.search_link = _get_url(i)
+            i.html = selenium_browser.fetch(i.search_link)
+            ITEMS.append(i)
+            time.sleep(0.5)
 
-html = selenium_browser.fetch(SHOP_LINKS[0])
+    selenium_browser.clean_up_before_quit()
 
-with open(TEMP_HTML_PAGE, "w") as fout:
-    fout.write(html)
+    import resolve
+    for i in ITEMS:
+        resolve.resolve(i)
 
-selenium_browser.clean_up_before_quit()
+if __name__ == '__main__':
+    main()
