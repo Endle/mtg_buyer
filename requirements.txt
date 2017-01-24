@@ -1,4 +1,5 @@
 selenium
 cachetools
 beautifulsoup4
+yattag
 
