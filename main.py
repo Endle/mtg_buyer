@@ -3,4 +3,6 @@ SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.co
 
 TEMP_FOLDER = "/tmp/mtg"
 
+import browser
 
+browser.fetch("http://www.baidu.com")

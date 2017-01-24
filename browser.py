@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 #)
 #_driver = webdriver.PhantomJS(desired_capabilities=_dcap)
 #_driver = webdriver.PhantomJS()
-_driver = webdriver.Firefox()
+try:
+    _driver = webdriver.Firefox()
+except:
+    logger.warn("hack for Mac")
+    _driver = webdriver.Firefox(executable_path="/Users/lizhenbo/geckodriver")
 _locker = threading.Lock()
 
 def _fetch(url:str):
