@@ -6,3 +6,5 @@ TEMP_FOLDER = "/tmp/mtg"
 import browser
 
 browser.fetch("http://www.baidu.com")
+
+browser.clean_up_before_quit()

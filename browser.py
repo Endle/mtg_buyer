@@ -33,6 +33,13 @@ _cache = cachetools.TTLCache(maxsize=128, ttl=3600, missing=_fetch) # 默认一�
 def fetch(url:str)->str:
     return _cache[url]
 
+def clean_up_before_quit():
+    try:
+        logger.warn("killing browser driver")
+        _driver.quit()
+    except:
+        pass
+
 if __name__ == '__main__':
     #code = fetch('http://httpbin.org/headers')
     link = "https://s.taobao.com/search?q=%E4%BA%91%E6%95%A3+%E4%B8%87%E6%99%BA%E7%89%8C&imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20151211&ie=utf8&style=list"
