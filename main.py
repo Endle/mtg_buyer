@@ -1,5 +1,8 @@
 class Item(object):
-    __slots__ = 'card', 'shop_link', 'search_link', 'html'
+    __slots__ = ('card', 'shop_link', 'search_link', 'html',
+        'item_name',#店铺里的名字
+        'item_price',
+        )
 
 TEMP_FOLDER = "/Users/lizhenbo/Downloads/mtg/"
 
