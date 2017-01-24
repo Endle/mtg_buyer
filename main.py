@@ -1,6 +1,8 @@
 class Item(object):
     __slots__ = 'card', 'shop_link', 'search_link', 'html'
 
+TEMP_FOLDER = "/Users/lizhenbo/Downloads/mtg/"
+
 import urllib.parse
 import time
 def _get_url(item:Item)->str:
@@ -21,7 +23,6 @@ def main():
     CARD_NAMES = ["背心", "文胸", "打底"]
     SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
 
-    TEMP_FOLDER = "/Users/lizhenbo/Downloads/"
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
 
     ITEMS = []
