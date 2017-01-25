@@ -25,12 +25,16 @@ def _get_url(item:Item)->str:
     ]
     return "".join(url_component)
 
-def generate_page(l:list)->str:
+def generate_page(l:tuple)->str:
+    assert(type(l[0]) == Item)
     from yattag import Doc
     doc, tag, text = Doc().tagtext()
 
     doc.asis('<!DOCTYPE html>')
     with tag('html'):
+        with tag('head'):
+            with tag('meta', charset='utf-8'):
+                pass
         with tag('body'):
             with tag('div'):
                 for sn in range(len(SHOP_LINKS)):
@@ -43,6 +47,7 @@ def generate_page(l:list)->str:
                                 with tag('li'):
                                     with tag('a', href=i.item_link):
                                         text(i.item_name)
+                                    text("  " + str(i.item_price))
 
     return doc.getvalue()
 
@@ -54,7 +59,7 @@ def main():
     ITEMS = []
 
     for s in SHOP_LINKS[:1]:
-        for c in CARD_NAMES:
+        for c in CARD_NAMES[:1]:
             i = Item()
             i.card = c
             i.shop_link = s
@@ -66,9 +71,10 @@ def main():
     selenium_browser.clean_up_before_quit()
 
     import resolve
-    ITEMS = [resolve.resolve(i) for i in ITEMS]
-
-    html = generate_page(ITEMS)
+    result = tuple(resolve.resolve(i) for i in ITEMS)
+# 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
+    result = tuple(i[0] for i in result)
+    html = generate_page(result)
     with open(TEMP_HTML_PAGE, "w") as fout:
         fout.write(html)
 
