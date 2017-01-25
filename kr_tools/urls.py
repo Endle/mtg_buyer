@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from . import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    #url(r'taobao(\d+)/$', 'taobao.views.fetch_item'),
-    url(r'^mtg_price/?$', 'mtg_price.views.home'),
+    url(r'^start/$', views.page)
 ]
