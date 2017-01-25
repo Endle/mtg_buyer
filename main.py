@@ -6,9 +6,8 @@ class Item(object):
         )
 
 TEMP_FOLDER = "/Users/lizhenbo/Downloads/mtg/"
-
-CARD_NAMES = ["背心", "文胸", "打底"]
-SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
+CARD_NAMES = []
+SHOP_LINKS = []
 
 import urllib.parse
 import time
@@ -80,4 +79,6 @@ def main():
 
 
 if __name__ == '__main__':
+    CARD_NAMES = ["背心", "文胸", "打底"]
+    SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
     main()
