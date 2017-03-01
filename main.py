@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -'''- coding: utf-8 -'''-
+
 class Item(object):
     __slots__ = ('card', 'shop_link', 'search_link', 'html',
         'item_name',#店铺里的名字
