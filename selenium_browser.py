@@ -16,7 +16,7 @@ try:
     _driver = webdriver.Firefox()
 except:
     logger.warn("hack for Linux")
-    _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodriver")
+    _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
 _locker = threading.Lock()
 
 def _fetch(url:str):
