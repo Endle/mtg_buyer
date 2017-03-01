@@ -55,3 +55,6 @@ migrations
 
 *.swp
 *~
+
+# Endle defined
+geckodriver.log
