@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 try:
     _driver = webdriver.Firefox()
 except:
-    logger.warn("hack for Mac")
-    _driver = webdriver.Firefox(executable_path="/Users/lizhenbo/geckodriver")
+    logger.warn("hack for Linux")
+    _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodriver")
 _locker = threading.Lock()
 
 def _fetch(url:str):

@@ -5,7 +5,7 @@ class Item(object):
         'item_link'
         )
 
-TEMP_FOLDER = "/Users/lizhenbo/Downloads/mtg/"
+TEMP_FOLDER = "/dev/shm/"
 CARD_NAMES = []
 SHOP_LINKS = []
 
