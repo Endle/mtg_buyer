@@ -17,7 +17,7 @@ def _dewrap(li):
     li = _deeper(li, 2, 1) #<dd class="detail-info">
     return li
 
-def _extract(item:Item, e):
+def _extract(item:Item, e)->Item:
     '''e: bs4.element.Tag'''
     item = copy.copy(item)
     c = [k for k in e.contents  if str(k).strip()]
@@ -47,6 +47,13 @@ def resolve(item:Item)->list:
     choices = [_extract(item, e) for e in elements]
     choices.sort(key=lambda i: i.item_price)
     return choices
+
+def best_choice(item:Item)->Item:
+    r = resolve(item)
+    if (len(r) == 0):
+        logging.warn("Find nothing for " + str(item))
+        return None
+    return resolve(item)[0]
 
 if __name__ == '__main__':
     i = Item()

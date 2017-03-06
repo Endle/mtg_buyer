@@ -7,6 +7,8 @@ class Item(object):
         'item_price',
         'item_link'
         )
+    def __str__(self):
+        return self.card + " from " + self.shop_link
 
 TEMP_FOLDER = "/dev/shm/"
 CARD_NAMES = []
@@ -60,28 +62,42 @@ def main():
 
     ITEMS = []
 
-    for s in SHOP_LINKS[:1]:
-        for c in CARD_NAMES[:1]:
+    for s in SHOP_LINKS:
+        for c in CARD_NAMES:
             i = Item()
             i.card = c
             i.shop_link = s
             i.search_link = _get_url(i)
+            print(i)
             i.html = selenium_browser.fetch(i.search_link)
             ITEMS.append(i)
             time.sleep(0.05)
 
     selenium_browser.clean_up_before_quit()
 
+    print(ITEMS)
     import resolve
-    result = tuple(resolve.resolve(i) for i in ITEMS)
+    result = tuple(resolve.best_choice(i) for i in ITEMS)
+    print(result)
+    for i in result:
+        print(i)
 # 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
-    result = tuple(i[0] for i in result)
     html = generate_page(result)
     with open(TEMP_HTML_PAGE, "w") as fout:
         fout.write(html)
 
+def main_wrapper(shops, cards):
+    global SHOP_LINKS
+    global CARD_NAMES
+    SHOP_LINKS = list(shops)
+    CARD_NAMES = [i.name for i in cards]
+    main()
+
+
 
 if __name__ == '__main__':
     CARD_NAMES = ["背心", "文胸", "打底"]
+    #CARD_NAMES = ["打底"]
     SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
+    #SHOP_LINKS = ["https://shop65188790.taobao.com"]
     main()

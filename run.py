@@ -39,6 +39,9 @@ class submitUserInput(QObject):
         for c in self.cardList:
             print(c)
 
+        import main
+        main.main_wrapper(self.shopLinks, self.cardList)
+
 def main():
     global VIEW
     global APP
