@@ -58,3 +58,4 @@ migrations
 
 # Endle defined
 geckodriver.log
+*.qmlc
