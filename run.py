@@ -24,7 +24,10 @@ class submitUserInput(QObject):
     def appendCard(self, name, number):
         c = Card()
         c.name = name
-        c.number = int(number)
+        try:
+            c.number = int(number)
+        except ValueError:
+            c.number = 1
         self.cardList.append(c)
     @pyqtSlot(str)
     def appendShop(self, slink):
