@@ -49,12 +49,11 @@ Rectangle {
             ListElement {
                 shopLink: "https://shop62237807.taobao.com/"
             }
+            ListElement {
+                shopLink: "https://shop65188790.taobao.com/"
+            }
         }
     }
-
-
-
-
 
     ListView {
         id: card_listView
@@ -77,12 +76,10 @@ Rectangle {
             id: cardListModel
             ListElement {
                 name: "背心"
-                //name: "back"
                 number: "3"
             }
             ListElement {
-                name: "胸罩"
-                //name: "back"
+                name: "文胸"
                 number: "5"
             }
         }
