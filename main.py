@@ -22,6 +22,10 @@ TEMP_FOLDER = "/dev/shm/"
 CARD_NAMES = []
 SHOP_LINKS = []
 
+def calc_shop_total_price(shop_link, items):
+    items = [i for i in items if i.shop_link == shop_link]
+    return sum([i.item_price for i in items])
+
 import urllib.parse
 import time
 def _get_url(item:Item)->str:
@@ -60,6 +64,8 @@ def generate_page(l:tuple)->str:
                                     with tag('a', href=i.item_link):
                                         text(i.item_name)
                                     text("  " + str(i.item_price))
+                        with tag('div'):
+                            text("Total: " + str( calc_shop_total_price(SHOP_LINKS[sn], items=todo)  ))
 
     return doc.getvalue()
 
@@ -71,6 +77,7 @@ def search(shop_link, card_name, card_amount=1):
     i.shop_link = shop_link
     i.search_link = _get_url(i)
     i.html = selenium_browser.fetch(i.search_link)
+# 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
     return resolve.best_choice(i)
 
 def main():
@@ -79,19 +86,16 @@ def main():
 
     ITEMS = []
 
-    selenium_browser.clean_up_before_quit()
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
             i = search(s, c)
-            ITEMS.append(i)
+            if i.item_link:
+                ITEMS.append(i)
             time.sleep(0.05)
 
     selenium_browser.clean_up_before_quit()
 
     result = ITEMS
-    for i in result:
-        print(i)
-# 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
     html = generate_page(result)
     with open(TEMP_HTML_PAGE, "w") as fout:
         fout.write(html)
@@ -107,7 +111,5 @@ def main_wrapper(shops, cards):
 
 if __name__ == '__main__':
     CARD_NAMES = ["背心", "文胸", "打底"]
-    #CARD_NAMES = ["打底"]
     SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
-    #SHOP_LINKS = ["https://shop65188790.taobao.com"]
     main()
