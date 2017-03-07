@@ -7,8 +7,14 @@ class Item(object):
         'item_price',
         'item_link'
         )
+    def __init__(self):
+        self.card = self.shop_link = self.search_link = self.html = None
+        self.item_name = self.item_price = self.item_link = None
     def __str__(self):
-        return self.card + " from " + self.shop_link
+        ret = self.card + " from " + self.shop_link
+        if self.item_price:
+            ret = ret + " :: " + str(self.item_price)
+        return ret
 
 TEMP_FOLDER = "/dev/shm/"
 CARD_NAMES = []
@@ -55,6 +61,7 @@ def generate_page(l:tuple)->str:
 
     return doc.getvalue()
 
+import resolve
 def main():
     import selenium_browser
 
@@ -70,15 +77,13 @@ def main():
             i.search_link = _get_url(i)
             print(i)
             i.html = selenium_browser.fetch(i.search_link)
+            i = resolve.best_choice(i)
             ITEMS.append(i)
             time.sleep(0.05)
 
     selenium_browser.clean_up_before_quit()
 
-    print(ITEMS)
-    import resolve
-    result = tuple(resolve.best_choice(i) for i in ITEMS)
-    print(result)
+    result = ITEMS
     for i in result:
         print(i)
 # 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
