@@ -29,6 +29,8 @@ def _fetch(url:str):
     logger.warn("id of webdriver {0}, locked with {1}".format(id(_driver), id(_locker)))
     logger.warn("fetching " + url)
     code = ""
+    if _driver == None:
+        init_driver()
     with _locker:
         _driver.get(url)
         code = _driver.page_source

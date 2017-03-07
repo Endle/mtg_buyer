@@ -2,7 +2,8 @@
 # -'''- coding: utf-8 -'''-
 
 class Item(object):
-    __slots__ = ('card', 'shop_link', 'search_link', 'html',
+    __slots__ = ('card', 'shop_link', 'card_amount',
+        'search_link', 'html',
         'item_name',#店铺里的名字
         'item_price',
         'item_link'
@@ -10,6 +11,7 @@ class Item(object):
     def __init__(self):
         self.card = self.shop_link = self.search_link = self.html = None
         self.item_name = self.item_price = self.item_link = None
+        self.card_amount = 1
     def __str__(self):
         ret = self.card + " from " + self.shop_link
         if self.item_price:
@@ -62,22 +64,25 @@ def generate_page(l:tuple)->str:
     return doc.getvalue()
 
 import resolve
+import selenium_browser
+def search(shop_link, card_name, card_amount=1):
+    i = Item()
+    i.card = card_name
+    i.shop_link = shop_link
+    i.search_link = _get_url(i)
+    i.html = selenium_browser.fetch(i.search_link)
+    return resolve.best_choice(i)
+
 def main():
-    import selenium_browser
 
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
 
     ITEMS = []
 
+    selenium_browser.clean_up_before_quit()
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
-            i = Item()
-            i.card = c
-            i.shop_link = s
-            i.search_link = _get_url(i)
-            print(i)
-            i.html = selenium_browser.fetch(i.search_link)
-            i = resolve.best_choice(i)
+            i = search(s, c)
             ITEMS.append(i)
             time.sleep(0.05)
 
