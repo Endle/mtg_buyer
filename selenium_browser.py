@@ -1,26 +1,32 @@
 from selenium import webdriver
-#from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import threading
 import cachetools
 import logging
 logger = logging.getLogger(__name__)
 
-#https://coderwall.com/p/9jgaeq/set-phantomjs-user-agent-string
-#_dcap = dict(DesiredCapabilities.PHANTOMJS)
-#_dcap["phantomjs.page.settings.userAgent"] = (
-    #"Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0"
-#)
-#_driver = webdriver.PhantomJS(desired_capabilities=_dcap)
-#_driver = webdriver.PhantomJS()
-try:
-    _driver = webdriver.Firefox()
-except:
-    logger.warn("hack for Linux")
-    _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
-_locker = threading.Lock()
+_driver = None
+_locker = None
+
+def init_driver():
+    global _driver, _locker
+    if _locker:
+        logger.warn("Already have a locker: {1}".format(id(_locker)))
+    else:
+        _locker = threading.Lock()
+    if _driver:
+        logger.warn("Already have a driver: {1}".format(id(_driver)))
+    else:
+        try:
+            _driver = webdriver.Firefox()
+        except:
+            logger.warn("hack for Linux")
+            _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
+
+init_driver()
 
 def _fetch(url:str):
-    logger.warn("id of webdriver %d" % id(_locker))
+    global _driver, _locker
+    logger.warn("id of webdriver {0}, locked with {1}".format(id(_driver), id(_locker)))
     logger.warn("fetching " + url)
     code = ""
     with _locker:
@@ -34,11 +40,15 @@ def fetch(url:str)->str:
     return _cache[url]
 
 def clean_up_before_quit():
+    global _driver, _locker
     try:
         logger.warn("killing browser driver")
         _driver.quit()
     except:
         pass
+    finally:
+        _driver = None
+    _locker = None
 
 if __name__ == '__main__':
     #code = fetch('http://httpbin.org/headers')
@@ -46,3 +56,4 @@ if __name__ == '__main__':
     code = fetch(link)
     with open("/dev/shm/headers.html", "w") as fout:
         fout.write(code)
+    clean_up_before_quit()
