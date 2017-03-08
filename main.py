@@ -21,6 +21,7 @@ class Item(object):
 TEMP_FOLDER = "/dev/shm/"
 CARD_NAMES = []
 SHOP_LINKS = []
+ITEMS = []
 
 def calc_shop_total_price(shop_link, items):
     items = [i for i in items if i.shop_link == shop_link]
@@ -81,15 +82,13 @@ def search(shop_link, card_name, card_amount=1):
     return resolve.best_choice(i)
 
 def main():
-
+    global ITEMS
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
-
-    ITEMS = []
 
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
             i = search(s, c)
-            if i.item_link:
+            if i and i.item_link:
                 ITEMS.append(i)
             time.sleep(0.05)
 
@@ -101,15 +100,31 @@ def main():
         fout.write(html)
 
 def main_wrapper(shops, cards):
+    TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
     global SHOP_LINKS
     global CARD_NAMES
     SHOP_LINKS = list(shops)
     CARD_NAMES = [i.name for i in cards]
-    main()
+    for s in SHOP_LINKS:
+        for c in CARD_NAMES:
+            i = search(s, c)
+            if i and i.item_link:
+                ITEMS.append(i)
+            time.sleep(0.05)
+    selenium_browser.clean_up_before_quit()
+
+    result = ITEMS
+    html = generate_page(result)
+    with open(TEMP_HTML_PAGE, "w") as fout:
+        fout.write(html)
+    from PyQt5.QtGui import QDesktopServices
+    from PyQt5.QtCore import QUrl
+    QDesktopServices.openUrl( QUrl(TEMP_HTML_PAGE) )
 
 
 
 if __name__ == '__main__':
+
     CARD_NAMES = ["背心", "文胸", "打底"]
     SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
     main()
