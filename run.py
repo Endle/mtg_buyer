@@ -10,6 +10,11 @@ from PyQt5.QtQuick import QQuickView
 VIEW = None
 APP = None
 
+from main import Card, submit_data
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 class Card(object):
     name = ""
     number = ""
@@ -34,13 +39,8 @@ class submitUserInput(QObject):
         self.shopLinks.append(slink)
     @pyqtSlot()
     def clicked(self):
-        print("Clicked!")
-        print(self.shopLinks)
-        for c in self.cardList:
-            print(c)
-
-        import main
-        main.main_wrapper(self.shopLinks, self.cardList)
+        logging.info("Clicked!")
+        submit_data(self.shopLinks, self.cardList)
 
 def main():
     global VIEW

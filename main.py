@@ -29,6 +29,8 @@ def calc_shop_total_price(shop_link, items):
 
 import urllib.parse
 import time
+import logging
+logging.basicConfig(level=logging.DEBUG)
 def _get_url(item:Item)->str:
     url_component = [
         item.shop_link,
@@ -81,7 +83,7 @@ def search(shop_link, card_name, card_amount=1):
 # 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
     return resolve.best_choice(i)
 
-def main():
+def run_sample():
     global ITEMS
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
 
@@ -99,7 +101,26 @@ def main():
     with open(TEMP_HTML_PAGE, "w") as fout:
         fout.write(html)
 
-def main_wrapper(shops, cards):
+class Card(object):
+    name = ""
+    number = ""
+    def __str__(self):
+        return self.name + " : " + str(self.number)
+
+def submit_data(shops:list, cards:list)->str:
+    '''shops: list of str
+    cards: list of Card()
+
+    Return a link, pointing to result (local)
+    '''
+    logging.info("Submitted shops:")
+    logging.info(shops)
+    logging.info("Submitted cards:")
+    logging.info( ", ".join(
+        [i.name + ":" + str(i.number) for i in cards]))
+    print(type(cards[0]))
+    #assert(type(cards[0]) == Card)
+
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
     global SHOP_LINKS
     global CARD_NAMES
@@ -127,4 +148,4 @@ if __name__ == '__main__':
 
     CARD_NAMES = ["背心", "文胸", "打底"]
     SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
-    main()
+    run_sample()
