@@ -5,6 +5,7 @@ import sys
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtQuick import QQuickView
 
 VIEW = None
@@ -40,7 +41,8 @@ class submitUserInput(QObject):
     @pyqtSlot()
     def clicked(self):
         logging.info("Clicked!")
-        submit_data(self.shopLinks, self.cardList)
+        result_page = submit_data(self.shopLinks, self.cardList)
+        QDesktopServices.openUrl( QUrl(result_page) )
 
 def main():
     global VIEW

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -'''- coding: utf-8 -'''-
 
+# Qt stuff shouldn't be imported to main.py !
+
 class Item(object):
     __slots__ = ('card', 'shop_link', 'card_amount',
         'search_link', 'html',
@@ -118,8 +120,6 @@ def submit_data(shops:list, cards:list)->str:
     logging.info("Submitted cards:")
     logging.info( ", ".join(
         [i.name + ":" + str(i.number) for i in cards]))
-    print(type(cards[0]))
-    #assert(type(cards[0]) == Card)
 
     TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
     global SHOP_LINKS
@@ -138,14 +138,11 @@ def submit_data(shops:list, cards:list)->str:
     html = generate_page(result)
     with open(TEMP_HTML_PAGE, "w") as fout:
         fout.write(html)
-    from PyQt5.QtGui import QDesktopServices
-    from PyQt5.QtCore import QUrl
-    QDesktopServices.openUrl( QUrl(TEMP_HTML_PAGE) )
+    return TEMP_HTML_PAGE
 
 
 
 if __name__ == '__main__':
-
-    CARD_NAMES = ["背心", "文胸", "打底"]
-    SHOP_LINKS = ["https://shop62237807.taobao.com", "https://shop65188790.taobao.com"]
+    CARD_NAMES = ["众神之怒", "流放之径"]
+    SHOP_LINKS = ["https://shop101650459.taobao.com"]
     run_sample()

@@ -47,10 +47,10 @@ Rectangle {
             id: shopListModel
             objectName: "shopListModel"
             ListElement {
-                shopLink: "https://shop62237807.taobao.com/"
+                shopLink: "https://shop34266771.taobao.com/"
             }
             ListElement {
-                shopLink: "https://shop65188790.taobao.com/"
+                shopLink: "https://shop101650459.taobao.com/"
             }
         }
     }
@@ -75,12 +75,16 @@ Rectangle {
         model: ListModel {
             id: cardListModel
             ListElement {
-                name: "背心"
+                name: "自行弩炮"
                 number: "3"
             }
             ListElement {
-                name: "文胸"
+                name: "流放之径"
                 number: "5"
+            }
+            ListElement {
+                name: "融铁雨"
+                number: "4"
             }
         }
     }
