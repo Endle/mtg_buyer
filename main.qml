@@ -10,7 +10,7 @@ Rectangle {
         id: addShopLinkTextField
         x: 97
         y: 114
-        width: 238
+        width: 269
         height: 40
         text: qsTr("Shop Link")
     }
@@ -25,11 +25,21 @@ Rectangle {
             shopListModel.append({shopLink:addShopLinkTextField.text})
         }
     }
-    ListView {
-        id: shop_listView
+    Rectangle {
+        id: rectangle
+        border.width: 1
+        border.color: "#000000"
+        width: 269
+        height: 226
         x: 97
         y: 236
-        width: 238
+
+
+    ListView {
+        id: shop_listView
+        x: 0
+        y: 0
+        width: 261
         height: 226
         delegate: Item {
             x: 5
@@ -54,11 +64,19 @@ Rectangle {
             }
         }
     }
+    }
 
+    Rectangle{
+        x: 385
+        y: 236
+        width: 309
+        height: 226
+        border.width: 1
+        border.color: "#000000"
     ListView {
         id: card_listView
-        x: 373
-        y: 236
+        x: 0
+        y: 0
         width: 321
         height: 226
         delegate: Item {
@@ -88,24 +106,27 @@ Rectangle {
             }
         }
     }
+    }
     TextField {
         id: addCardNameTextField
-        x: 373
+        x: 385
         y: 114
+        width: 215
+        height: 40
         text: qsTr("Card Name")
     }
 
     TextField {
         id: addCardNumberTextField
-        x: 596
+        x: 626
         y: 114
-        width: 98
+        width: 68
         height: 40
         text: qsTr("Number")
     }
     Button {
         id: addCardButton
-        x: 373
+        x: 579
         y: 175
         width: 115
         height: 40
