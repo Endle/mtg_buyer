@@ -23,6 +23,7 @@ Rectangle {
         text: qsTr("Add Shop Link")
         onClicked: {
             shopListModel.append({shopLink:addShopLinkTextField.text})
+            addShopLinkTextField.clear()
         }
     }
     Rectangle {
@@ -133,6 +134,8 @@ Rectangle {
         text: qsTr("Add Card")
         onClicked: {
             cardListModel.append({name:addCardNameTextField.text, number:addCardNumberTextField.text})
+            addCardNameTextField.clear()
+            addCardNumberTextField.clear()
         }
     }
 
