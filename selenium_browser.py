@@ -22,8 +22,6 @@ def init_driver():
             logger.warn("hack for Linux")
             _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
 
-init_driver()
-
 def _fetch(url:str):
     global _driver, _locker
     logger.warn("id of webdriver {0}, locked with {1}".format(id(_driver), id(_locker)))
