@@ -75,15 +75,15 @@ Rectangle {
         model: ListModel {
             id: cardListModel
             ListElement {
-                name: "自行弩炮"
+                name: "闪电击"
                 number: "3"
             }
             ListElement {
-                name: "流放之径"
-                number: "5"
+                name: "反抗烈炬茜卓"
+                number: "2"
             }
             ListElement {
-                name: "融铁雨"
+                name: "生机巨械"
                 number: "4"
             }
         }

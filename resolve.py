@@ -45,15 +45,19 @@ def resolve(item:Item)->list:
     elements = soup.find_all('li', class_='item-wrap')
     elements = tuple(_dewrap(e) for e in elements)
     choices = [_extract(item, e) for e in elements]
-    choices.sort(key=lambda i: i.item_price)
     return choices
 
 def best_choice(item:Item)->Item:
     r = resolve(item)
+    for p in r:
+        logging.info(p)
+#闪电击 与 闪电炼击
+    r = [i for i in r if item.card in i.item_name]
     if (len(r) == 0):
         logging.warn("Find nothing for " + str(item))
         return None
-    return resolve(item)[0]
+    r.sort(key=lambda i: i.item_price)
+    return r[0]
 
 if __name__ == '__main__':
     i = Item()
