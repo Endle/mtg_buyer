@@ -3,6 +3,11 @@
 
 # Qt stuff shouldn't be imported to main.py !
 
+import urllib.parse
+import time
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 class Item(object):
     __slots__ = ('card', 'shop_link', 'card_amount',
         'search_link', 'html',
@@ -21,18 +26,22 @@ class Item(object):
         return ret
 
 TEMP_FOLDER = "/dev/shm/"
+VAR_PATH = "/home/lizhenbo/.mtg_buyer/"
 CARD_NAMES = []
 SHOP_LINKS = []
 ITEMS = []
+
+def create_var_path():
+    logging.warn("var_path hack for li's PC")
+    from pathlib import Path
+    path = Path(VAR_PATH)
+    path.mkdir(parents=True, exist_ok=True)
+create_var_path()
 
 def calc_shop_total_price(shop_link, items):
     items = [i for i in items if i.shop_link == shop_link]
     return sum([i.item_price for i in items])
 
-import urllib.parse
-import time
-import logging
-logging.basicConfig(level=logging.DEBUG)
 def _get_url(item:Item)->str:
     url_component = [
         item.shop_link,

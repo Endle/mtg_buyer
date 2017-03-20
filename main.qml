@@ -64,6 +64,10 @@ Rectangle {
                 shopLink: "https://shop101650459.taobao.com/"
             }
         }
+        function loadShopList(link) {
+            console.log("loading in qml" + link);
+        }
+
     }
     }
 
@@ -142,10 +146,10 @@ Rectangle {
 
     Button {
         id: submitUserInputButton
-        x: 535
+        x: 534
         y: 468
-        width: 159
-        height: 40
+        width: 160
+        height: 45
         text: qsTr("Submit")
         //i: 0
         onClicked: {
@@ -158,6 +162,32 @@ Rectangle {
             }
 
             submit.clicked()
+        }
+    }
+
+    Button {
+        id: loadFromFileButton
+        x: 97
+        y: 473
+        width: 100
+        height: 45
+        text: qsTr("Load Shop")
+        onClicked: {
+            shop_listView.loadShopList()
+            submit.loadShopListFromFile(shop_listView.loadShopList)
+
+        }
+    }
+
+    Button {
+        id: saveToFileButton
+        x: 264
+        y: 473
+        width: 100
+        height: 45
+        text: qsTr("Save Shop")
+        onClicked: {
+            submit.saveShopListToFile()
         }
     }
 }
