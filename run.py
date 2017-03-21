@@ -8,7 +8,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtQuick import QQuickView, QQuickItem
-from PyQt5.QtQml import QJSValue
+from PyQt5.QtQml import QJSValue, qmlRegisterType
+from PyQt5.QtQml import QQmlApplicationEngine, QQmlComponent, QQmlEngine
 
 VIEW = None
 APP = None
@@ -19,15 +20,53 @@ from main import Card, submit_data, VAR_PATH
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+# http://pyqt.sourceforge.net/Docs/PyQt5/qml.html
+class PyQtShop(QObject):
+    def __init__(self, sl="InvalidLink", parent=None):
+        logging.info("init shop")
+        super().__init__(parent)
+        self._shopLink = sl
+
+    @pyqtProperty('QString')
+    def shopLink(self):
+        return self._shopLink
+    @shopLink.setter
+    def shopLink(self,link):
+        self._shopLink = link
+
+class PyQtShopListModel(QObject):
+    data = None
+    def __init__(self):
+        logging.info("Init shops")
+        self.data = []
+
+        global VIEW
+        global APP
+        global CONTEXT
+
+        CONTEXT = VIEW.rootContext()
+        CONTEXT.setContextProperty("submit", submit)
+    @pyqtSlot(str)
+    def append(self, slink):
+        self.data.append(slink)
+
+class cardListModel(QObject):
+    def __init__(self):
+        logging.info("Init cards")
+
 class submitUserInput(QObject):
     shopLinks = []
     cardList = []
     load_signal = pyqtSignal()
+    shops = None
 
     def pyClear(self):
         self.shopLinks.clear()
         self.cardList.clear()
 
+    @pyqtSlot(str)
+    def appendShop(self, slink):
+        self.shopLinks.append(slink)
     @pyqtSlot(str, str)
     def appendCard(self, name, number):
         c = Card()
@@ -37,9 +76,6 @@ class submitUserInput(QObject):
         except ValueError:
             c.number = 1
         self.cardList.append(c)
-    @pyqtSlot(str)
-    def appendShop(self, slink):
-        self.shopLinks.append(slink)
     @pyqtSlot()
     def clicked(self):
         logging.info("Clicked!")
@@ -58,14 +94,6 @@ class submitUserInput(QObject):
         logging.info("loading from " + str(path))
         print(addShop)
         addShop.call([QJSValue('From PyQt')])
-        #self.load_signal = pyqtSignal()
-        #global VIEW
-        #root = VIEW.rootObject()
-        #shopList = root.findChild(QObject, name="shopListModel")
-        #print(self.load_signal)
-        #print(shopList)
-        #self.load_signal.connect("loadShopListSignal")
-        #self.load_signal.connect(self.load_signal, shopList)
         #self.load_signal.emit()
 
     @pyqtSlot()
@@ -78,9 +106,10 @@ def main():
     global CONTEXT
     APP = QGuiApplication(sys.argv)
     VIEW = QQuickView()
+    qmlRegisterType(PyQtShop, 'pyqtTypes', 1, 0, 'ShopType')
+
     url = QUrl('main.qml')
     VIEW.setSource(url)
-
 
     submit = submitUserInput()
 

@@ -1,9 +1,11 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
+import pyqtTypes 1.0
 
 Rectangle {
     width: 800
     height: 600
+
 
 
     TextField {
@@ -22,8 +24,8 @@ Rectangle {
         height: 40
         text: qsTr("Add Shop Link")
         onClicked: {
-            shopListModel.append({shopLink:addShopLinkTextField.text})
-            addShopLinkTextField.clear()
+            shopListModel.add(addShopLinkTextField.text);
+            addShopLinkTextField.clear();
         }
     }
     Rectangle {
@@ -35,40 +37,43 @@ Rectangle {
         x: 97
         y: 236
 
+        ListView {
+            id: shop_listView
+            x: 0
+            y: 0
+            width: 261
+            height: 226
+            delegate: Item {
+                x: 5
+                width: 80
+                height: 40
+                Row {
+                    Text {text: shopLink}
+                }
+            }
 
-    ListView {
-        id: shop_listView
-        x: 0
-        y: 0
-        width: 261
-        height: 226
-        delegate: Item {
-            x: 5
-            width: 80
-            height: 40
-            Row {
-                id: row1
-                spacing: 10
-                Text {
-                    text: shopLink
+            model: ListModel {
+                id: shopListModel
+                objectName: "shopListModel"
+                /*
+                ListElement {
+                    shopLink: "https://shop34266771.taobao.com/"
+                }
+                ListElement {
+                   shopLink: "https://shop101650459.taobao.com/"
+                }
+                */
+                function loadShopList(link) {
+                    console.log("loading in qml" + link);
+                }
+                function add(link) {
+                    console.log("add shop");
+                    var shop = Object.create(ShopType);
+                    shop.shopLink = link;
+                    shopListModel.append(shop);
                 }
             }
         }
-        model: ListModel {
-            id: shopListModel
-            objectName: "shopListModel"
-            ListElement {
-                shopLink: "https://shop34266771.taobao.com/"
-            }
-            ListElement {
-                shopLink: "https://shop101650459.taobao.com/"
-            }
-        }
-        function loadShopList(link) {
-            console.log("loading in qml" + link);
-        }
-
-    }
     }
 
     Rectangle{
