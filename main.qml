@@ -63,8 +63,12 @@ Rectangle {
                    shopLink: "https://shop101650459.taobao.com/"
                 }
                 */
-                function loadShopList(link) {
+                function loadShopList() {
                     console.log("loading in qml" + link);
+                    var list = Object.create(ShopList);
+                    console.log(list);
+                    var link = "http://baidu.com"
+                    pyqtShopList.append(link);
                 }
                 function add(link) {
                     console.log("add shop");
@@ -178,7 +182,7 @@ Rectangle {
         height: 45
         text: qsTr("Load Shop")
         onClicked: {
-            shop_listView.loadShopList()
+            shopListModel.loadShopList()
             submit.loadShopListFromFile(shop_listView.loadShopList)
 
         }

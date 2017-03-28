@@ -34,21 +34,25 @@ class PyQtShop(QObject):
     def shopLink(self,link):
         self._shopLink = link
 
-class PyQtShopListModel(QObject):
+class PyQtShopListModel(QAbstractListModel):
     data = None
-    def __init__(self):
-        logging.info("Init shops")
+    def __init__(self, parent=None):
+        logging.info("Init shop list")
+        super().__init__(parent)
         self.data = []
 
         global VIEW
         global APP
         global CONTEXT
 
-        CONTEXT = VIEW.rootContext()
-        CONTEXT.setContextProperty("submit", submit)
+        #CONTEXT = VIEW.rootContext()
+        #CONTEXT.setContextProperty("submit", submit)
     @pyqtSlot(str)
     def append(self, slink):
+        logging.info("Adding shop: " + slink)
         self.data.append(slink)
+
+
 
 class cardListModel(QObject):
     def __init__(self):
@@ -107,6 +111,7 @@ def main():
     APP = QGuiApplication(sys.argv)
     VIEW = QQuickView()
     qmlRegisterType(PyQtShop, 'pyqtTypes', 1, 0, 'ShopType')
+    qmlRegisterType(PyQtShopListModel, 'pyqtTypes', 1, 0, 'ShopList')
 
     url = QUrl('main.qml')
     VIEW.setSource(url)
@@ -115,6 +120,10 @@ def main():
 
     CONTEXT = VIEW.rootContext()
     CONTEXT.setContextProperty("submit", submit)
+
+    shops = PyQtShopListModel()
+    CONTEXT.setContextProperty("pyqtShopList", shops)
+
     VIEW.show()
 
 
