@@ -129,9 +129,7 @@ Rectangle {
         height: 45
         text: qsTr("Load Shop")
         onClicked: {
-            //shopListModel.loadShopList()
-            //submit.loadShopListFromFile(shop_listView.loadShopList)
-            pyqtShopList.append("baidu.com");
+            pyqtShopList.loadShopListFromFile();
         }
     }
 

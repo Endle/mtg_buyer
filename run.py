@@ -72,6 +72,27 @@ class PyQtShopListModel(QAbstractListModel):
     def roleNames(self):
         return self._ROLE_MAP
 
+    def getShopListFile(self):
+        '''Return a Path, showing a file path
+        Guarantee that is legal'''
+        path = Path(VAR_PATH).joinpath("shop_list.txt")
+        return path
+
+    @pyqtSlot()
+    def loadShopListFromFile(self):
+        global SHOP_LIST
+        path = self.getShopListFile()
+        logging.info("loading from " + str(path))
+        SHOP_LIST.clear()
+        with open(path) as fin:
+            for i in fin.readlines():
+                SHOP_LIST.append(i)
+
+
+    @pyqtSlot()
+    def saveShopListToFile(self):
+        print("save")
+
 
 def _dict_to_rolemap(d):
     ret = {}
@@ -141,22 +162,6 @@ class submitUserInput(QObject):
         self.pyClear()
         QDesktopServices.openUrl( QUrl(result_page) )
 
-    def getShopListFile(self):
-        '''Return a Path, showing a file path
-        Guarantee that is legal'''
-        path = Path(VAR_PATH).joinpath("shop_list.txt")
-        return path
-
-    @pyqtSlot('QJSValue')
-    def loadShopListFromFile(self, addShop):
-        path = self.getShopListFile()
-        logging.info("loading from " + str(path))
-        print(addShop)
-        addShop.call([QJSValue('From PyQt')])
-
-    @pyqtSlot()
-    def saveShopListToFile(self):
-        print("save")
 
 def main():
     global VIEW
