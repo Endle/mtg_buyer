@@ -167,10 +167,12 @@ Rectangle {
         text: qsTr("Submit")
         //i: 0
         onClicked: {
-            var i
+            var i;
+            /*
             for(i=0; i<shopListModel.count; i++) {
                 submit.appendShop( shopListModel.get(i).shopLink );
             }
+            */
             for(i=0; i<cardListModel.count; i++) {
                 submit.appendCard( cardListModel.get(i).name, cardListModel.get(i).number)
             }

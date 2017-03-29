@@ -14,6 +14,7 @@ from PyQt5.QtQml import QQmlApplicationEngine, QQmlComponent, QQmlEngine
 VIEW = None
 APP = None
 CONTEXT = None
+SHOP_LIST = None
 
 from main import Card, submit_data, VAR_PATH
 
@@ -42,28 +43,9 @@ class PyQtShopListModel(QAbstractListModel):
         logging.info("Init shop list")
         super().__init__(parent)
         self._data = []
-
-        global VIEW
-        global APP
-        global CONTEXT
-
-        #CONTEXT = VIEW.rootContext()
-        #CONTEXT.setContextProperty("submit", submit)
     @pyqtSlot(str)
     def append(self, slink):
         logging.info("Adding shop: " + slink)
-        #CONTEXT.setContextProperty("pyqtShopList",
-            #QVariant(self))
-
-        #def insertRows(self, row, count, parent=QtCore.QModelIndex()):
-            #assert 0 <= row <= self.rowCount()
-            #assert count > 0
-
-            #self.beginInsertRows(parent, row, row + count - 1)
-            #new_row = [None] * self.columnCount()
-            #for row in range(row, row + count):
-                #self._data.insert(row, copy(new_row))
-            #self.endInsertRows()
         self.beginInsertRows(QModelIndex(),
                 self.rowCount(), self.rowCount()+1)
 
@@ -75,23 +57,25 @@ class PyQtShopListModel(QAbstractListModel):
         count = len(self._data)
         logging.info("Asking rows, returning " + str(count))
         return count
+    def dewrap(self, i):
+        return self._data[i]._shopLink
+
     @pyqtSlot(QModelIndex, int)
     def data(self, index, role):
         i = index.row()
         logging.info("Getting data " + str(i))
         assert(role == 1)
-        return QVariant( self._data[i]._shopLink )
+        return QVariant( self.dewrap(i)  )
+
+# http://stackoverflow.com/q/29455801/1166518
     def roleNames(self):
         return self._ROLE_MAP
-
-
 
 class cardListModel(QObject):
     def __init__(self):
         logging.info("Init cards")
 
 class submitUserInput(QObject):
-    shopLinks = []
     cardList = []
     load_signal = pyqtSignal()
     shops = None
@@ -100,9 +84,6 @@ class submitUserInput(QObject):
         self.shopLinks.clear()
         self.cardList.clear()
 
-    @pyqtSlot(str)
-    def appendShop(self, slink):
-        self.shopLinks.append(slink)
     @pyqtSlot(str, str)
     def appendCard(self, name, number):
         c = Card()
@@ -115,7 +96,10 @@ class submitUserInput(QObject):
     @pyqtSlot()
     def clicked(self):
         logging.info("Clicked!")
-        result_page = submit_data(self.shopLinks, self.cardList)
+        global SHOP_LIST
+        result_page = submit_data(
+            [SHOP_LIST.dewrap(i) for i in range(SHOP_LIST.rowCount())],
+            self.cardList)
         QDesktopServices.openUrl( QUrl(result_page) )
 
     def getShopListFile(self):
@@ -140,6 +124,7 @@ def main():
     global VIEW
     global APP
     global CONTEXT
+    global SHOP_LIST
     APP = QGuiApplication(sys.argv)
     VIEW = QQuickView()
     qmlRegisterType(PyQtShop, 'pyqtTypes', 1, 0, 'ShopType')
@@ -150,9 +135,9 @@ def main():
     CONTEXT = VIEW.rootContext()
     CONTEXT.setContextProperty("submit", submit)
 
-    shops = PyQtShopListModel()
+    SHOP_LIST = PyQtShopListModel()
     CONTEXT.setContextProperty("pyqtShopList",
-            QVariant(shops))
+            QVariant(SHOP_LIST))
 
     url = QUrl('main.qml')
     VIEW.setSource(url)
