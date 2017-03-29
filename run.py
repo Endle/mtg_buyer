@@ -42,7 +42,10 @@ class PyQtShopListModel(QAbstractListModel):
     _data = None
     _ROLE_MAP = {1:QByteArray().append("shopLink")}
     def clear(self):
+        self.beginRemoveRows(QModelIndex(),
+                0, self.rowCount()-1)
         self._data.clear()
+        self.endRemoveRows()
     def __init__(self, parent=None):
         logging.info("Init shop list")
         super().__init__(parent)
@@ -103,7 +106,10 @@ class PyQtCardListModel(QAbstractListModel):
     _data = None
     _ROLE_MAP = _dict_to_rolemap({1:"name", 2:"number"})
     def clear(self):
+        self.beginRemoveRows(QModelIndex(),
+                0, self.rowCount()-1)
         self._data.clear()
+        self.endRemoveRows()
     def __init__(self, parent=None):
         logging.info("Init cards")
         super().__init__(parent)
