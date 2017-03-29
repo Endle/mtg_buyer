@@ -103,12 +103,11 @@ Rectangle {
             width: 80
             height: 40
             Row {
-                Text {text: name}
-                Text {text: " : "}
-                Text {text: number}
-
+                Text {text: name +  " : " + number}
             }
         }
+        model: pyqtCardList
+        /*
         model: ListModel {
             id: cardListModel
             ListElement {
@@ -124,6 +123,7 @@ Rectangle {
                 number: "4"
             }
         }
+        */
     }
     }
     TextField {
@@ -151,7 +151,7 @@ Rectangle {
         height: 40
         text: qsTr("Add Card")
         onClicked: {
-            cardListModel.append({name:addCardNameTextField.text, number:addCardNumberTextField.text})
+            pyqtCardList.append(addCardNameTextField.text, addCardNumberTextField.text)
             addCardNameTextField.clear()
             addCardNumberTextField.clear()
         }
@@ -172,11 +172,11 @@ Rectangle {
             for(i=0; i<shopListModel.count; i++) {
                 submit.appendShop( shopListModel.get(i).shopLink );
             }
-            */
+
             for(i=0; i<cardListModel.count; i++) {
                 submit.appendCard( cardListModel.get(i).name, cardListModel.get(i).number)
             }
-
+*/
             submit.clicked()
         }
     }
