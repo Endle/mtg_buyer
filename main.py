@@ -25,17 +25,20 @@ class Item(object):
             ret = ret + " :: " + str(self.item_price)
         return ret
 
-TEMP_FOLDER = "/dev/shm/"
-VAR_PATH = "/home/lizhenbo/.mtg_buyer/"
+import os
+from pathlib import Path
+HOME_PATH = Path(os.path.expanduser('~'))
+VAR_PATH = HOME_PATH.joinpath(".mtg_buyer")
+TEMP_FOLDER = VAR_PATH.joinpath("temp")
+TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
 CARD_NAMES = []
 SHOP_LINKS = []
 ITEMS = []
 
 def create_var_path():
     logging.warn("var_path hack for li's PC")
-    from pathlib import Path
-    path = Path(VAR_PATH)
-    path.mkdir(parents=True, exist_ok=True)
+    Path(VAR_PATH).mkdir(parents=True, exist_ok=True)
+    Path(TEMP_FOLDER).mkdir(parents=True, exist_ok=True)
 create_var_path()
 
 def calc_shop_total_price(shop_link, items):
@@ -96,7 +99,8 @@ def search(shop_link, card_name, card_amount=1):
 
 def run_sample():
     global ITEMS
-    TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
+    global TEMP_HTML_PAGE
+
 
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
@@ -152,6 +156,6 @@ def submit_data(shops:list, cards:list)->str:
 
 
 if __name__ == '__main__':
-    CARD_NAMES = ["众神之怒", "流放之径"]
+    CARD_NAMES = ["赞迪卡伙伴基定", "放出怪灵"]
     SHOP_LINKS = ["https://shop101650459.taobao.com"]
     run_sample()
