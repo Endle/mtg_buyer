@@ -23,6 +23,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 # http://pyqt.sourceforge.net/Docs/PyQt5/qml.html
+# 这个类隐藏在 QAbstractItemModel 后面，其实没必要定义
+# FIXME 下次无聊的时候重构掉
 class PyQtShop(QObject):
     _shopLink = ""
     def __init__(self, sl="InvalidLink", parent=None):
@@ -60,14 +62,12 @@ class PyQtShopListModel(QAbstractListModel):
         return count
     def dewrap(self, i):
         return self._data[i]._shopLink
-
     @pyqtSlot(QModelIndex, int)
     def data(self, index, role):
         i = index.row()
         logging.info("Getting data " + str(i))
         assert(role == 1)
         return QVariant( self.dewrap(i)  )
-
 # http://stackoverflow.com/q/29455801/1166518
     def roleNames(self):
         return self._ROLE_MAP
@@ -150,7 +150,6 @@ class submitUserInput(QObject):
         logging.info("loading from " + str(path))
         print(addShop)
         addShop.call([QJSValue('From PyQt')])
-        #self.load_signal.emit()
 
     @pyqtSlot()
     def saveShopListToFile(self):
@@ -164,8 +163,6 @@ def main():
     global CARD_LIST
     APP = QGuiApplication(sys.argv)
     VIEW = QQuickView()
-    qmlRegisterType(PyQtShop, 'pyqtTypes', 1, 0, 'ShopType')
-    #qmlRegisterType(PyQtShopListModel, 'pyqtTypes', 1, 0, 'ShopList')
 
     submit = submitUserInput()
 
@@ -175,16 +172,13 @@ def main():
     SHOP_LIST = PyQtShopListModel()
     CONTEXT.setContextProperty("pyqtShopList",
             QVariant(SHOP_LIST))
-
     CARD_LIST = PyQtCardListModel()
     CONTEXT.setContextProperty("pyqtCardList",
             QVariant(CARD_LIST))
 
     url = QUrl('main.qml')
     VIEW.setSource(url)
-
     VIEW.show()
-
 
     sys.exit(APP.exec_())
 
