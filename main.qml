@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.1
-import pyqtTypes 1.0
+//import pyqtTypes 1.0
 
 Rectangle {
     width: 800
@@ -24,7 +24,7 @@ Rectangle {
         height: 40
         text: qsTr("Add Shop Link")
         onClicked: {
-            shopListModel.add(addShopLinkTextField.text);
+            pyqtShopList.append(addShopLinkTextField.text);
             addShopLinkTextField.clear();
         }
     }
@@ -43,6 +43,7 @@ Rectangle {
             y: 0
             width: 261
             height: 226
+
             delegate: Item {
                 x: 5
                 width: 80
@@ -52,7 +53,10 @@ Rectangle {
                 }
             }
 
-            model: ListModel {
+
+            model: pyqtShopList
+                /*
+                ListModel {
                 id: shopListModel
                 objectName: "shopListModel"
                 /*
@@ -62,7 +66,7 @@ Rectangle {
                 ListElement {
                    shopLink: "https://shop101650459.taobao.com/"
                 }
-                */
+
                 function loadShopList() {
                     console.log("loading in qml" + link);
                     var list = Object.create(ShopList);
@@ -76,7 +80,8 @@ Rectangle {
                     shop.shopLink = link;
                     shopListModel.append(shop);
                 }
-            }
+            }   */
+
         }
     }
 
@@ -182,8 +187,9 @@ Rectangle {
         height: 45
         text: qsTr("Load Shop")
         onClicked: {
-            shopListModel.loadShopList()
-            submit.loadShopListFromFile(shop_listView.loadShopList)
+            //shopListModel.loadShopList()
+            //submit.loadShopListFromFile(shop_listView.loadShopList)
+            pyqtShopList.append("baidu.com");
 
         }
     }

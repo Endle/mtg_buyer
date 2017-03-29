@@ -35,11 +35,12 @@ class PyQtShop(QObject):
         self._shopLink = link
 
 class PyQtShopListModel(QAbstractListModel):
-    data = None
+    _data = None
+    _ROLE_MAP = {1:QByteArray().append("shopLink")}
     def __init__(self, parent=None):
         logging.info("Init shop list")
         super().__init__(parent)
-        self.data = []
+        self._data = []
 
         global VIEW
         global APP
@@ -50,7 +51,35 @@ class PyQtShopListModel(QAbstractListModel):
     @pyqtSlot(str)
     def append(self, slink):
         logging.info("Adding shop: " + slink)
-        self.data.append(slink)
+        #CONTEXT.setContextProperty("pyqtShopList",
+            #QVariant(self))
+
+        #def insertRows(self, row, count, parent=QtCore.QModelIndex()):
+            #assert 0 <= row <= self.rowCount()
+            #assert count > 0
+
+            #self.beginInsertRows(parent, row, row + count - 1)
+            #new_row = [None] * self.columnCount()
+            #for row in range(row, row + count):
+                #self._data.insert(row, copy(new_row))
+            #self.endInsertRows()
+        self.beginInsertRows(QModelIndex(),
+                self.rowCount(), self.rowCount()+1)
+
+        self._data.append(PyQtShop(slink))
+        self.endInsertRows()
+        print(self._data)
+    @pyqtSlot(QObject)
+    def rowCount(self, parent=None):
+        count = len(self._data)
+        logging.info("Asking rows, returning " + str(count))
+        return count
+    @pyqtSlot()
+    def data(self):
+        logging.info("Getting data")
+        return None
+    def roleNames(self):
+        return self._ROLE_MAP
 
 
 
@@ -111,10 +140,7 @@ def main():
     APP = QGuiApplication(sys.argv)
     VIEW = QQuickView()
     qmlRegisterType(PyQtShop, 'pyqtTypes', 1, 0, 'ShopType')
-    qmlRegisterType(PyQtShopListModel, 'pyqtTypes', 1, 0, 'ShopList')
-
-    url = QUrl('main.qml')
-    VIEW.setSource(url)
+    #qmlRegisterType(PyQtShopListModel, 'pyqtTypes', 1, 0, 'ShopList')
 
     submit = submitUserInput()
 
@@ -122,7 +148,11 @@ def main():
     CONTEXT.setContextProperty("submit", submit)
 
     shops = PyQtShopListModel()
-    CONTEXT.setContextProperty("pyqtShopList", shops)
+    CONTEXT.setContextProperty("pyqtShopList",
+            QVariant(shops))
+
+    url = QUrl('main.qml')
+    VIEW.setSource(url)
 
     VIEW.show()
 
