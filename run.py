@@ -31,7 +31,6 @@ class PyQtShop(QObject):
         logging.info("init shop")
         super().__init__(parent)
         self._shopLink = sl
-
     @pyqtProperty('QString')
     def shopLink(self):
         return self._shopLink
@@ -42,6 +41,8 @@ class PyQtShop(QObject):
 class PyQtShopListModel(QAbstractListModel):
     _data = None
     _ROLE_MAP = {1:QByteArray().append("shopLink")}
+    def clear(self):
+        self._data.clear()
     def __init__(self, parent=None):
         logging.info("Init shop list")
         super().__init__(parent)
@@ -51,7 +52,6 @@ class PyQtShopListModel(QAbstractListModel):
         logging.info("Adding shop: " + slink)
         self.beginInsertRows(QModelIndex(),
                 self.rowCount(), self.rowCount())
-
         self._data.append(PyQtShop(slink))
         self.endInsertRows()
         print(self._data)
@@ -81,6 +81,8 @@ def _dict_to_rolemap(d):
 class PyQtCardListModel(QAbstractListModel):
     _data = None
     _ROLE_MAP = _dict_to_rolemap({1:"name", 2:"number"})
+    def clear(self):
+        self._data.clear()
     def __init__(self, parent=None):
         logging.info("Init cards")
         super().__init__(parent)
@@ -123,19 +125,20 @@ class submitUserInput(QObject):
     cardList = []
     load_signal = pyqtSignal()
     shops = None
+    global SHOP_LIST
+    global CARD_LIST
 
     def pyClear(self):
-        self.shopLinks.clear()
-        self.cardList.clear()
+        SHOP_LIST.clear()
+        CARD_LIST.clear()
 
     @pyqtSlot()
     def clicked(self):
         logging.info("Clicked!")
-        global SHOP_LIST
-        global CARD_LIST
         result_page = submit_data(
             [SHOP_LIST.dewrap(i) for i in range(SHOP_LIST.rowCount())],
             CARD_LIST._data)
+        self.pyClear()
         QDesktopServices.openUrl( QUrl(result_page) )
 
     def getShopListFile(self):
