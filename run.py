@@ -71,6 +71,9 @@ class PyQtShopListModel(QAbstractListModel):
         logging.info("Getting data " + str(i))
         assert(role == 1)
         return QVariant( self.dewrap(i)  )
+    def getStrList(self):
+        return [self.dewrap(i) for i in range(self.rowCount())]
+
 # http://stackoverflow.com/q/29455801/1166518
     def roleNames(self):
         return self._ROLE_MAP
@@ -91,10 +94,14 @@ class PyQtShopListModel(QAbstractListModel):
             for i in fin.readlines():
                 SHOP_LIST.append(i)
 
-
     @pyqtSlot()
     def saveShopListToFile(self):
-        print("save")
+        global SHOP_LIST
+        path = self.getShopListFile()
+        logging.info("saving to " + str(path))
+        with open(path, 'w') as fout:
+            for i in SHOP_LIST.getStrList():
+                print(i, file=fout)
 
 
 def _dict_to_rolemap(d):
@@ -163,7 +170,7 @@ class submitUserInput(QObject):
     def clicked(self):
         logging.info("Clicked!")
         result_page = submit_data(
-            [SHOP_LIST.dewrap(i) for i in range(SHOP_LIST.rowCount())],
+            SHOP_LIST.getStrList(),
             CARD_LIST._data)
         self.pyClear()
         QDesktopServices.openUrl( QUrl(result_page) )

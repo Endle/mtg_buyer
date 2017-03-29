@@ -141,7 +141,7 @@ Rectangle {
         height: 45
         text: qsTr("Save Shop")
         onClicked: {
-            submit.saveShopListToFile()
+            pyqtShopList.saveShopListToFile()
         }
     }
 }
