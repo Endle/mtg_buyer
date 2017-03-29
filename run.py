@@ -22,6 +22,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # http://pyqt.sourceforge.net/Docs/PyQt5/qml.html
 class PyQtShop(QObject):
+    _shopLink = ""
     def __init__(self, sl="InvalidLink", parent=None):
         logging.info("init shop")
         super().__init__(parent)
@@ -74,10 +75,12 @@ class PyQtShopListModel(QAbstractListModel):
         count = len(self._data)
         logging.info("Asking rows, returning " + str(count))
         return count
-    @pyqtSlot()
-    def data(self):
-        logging.info("Getting data")
-        return None
+    @pyqtSlot(QModelIndex, int)
+    def data(self, index, role):
+        i = index.row()
+        logging.info("Getting data " + str(i))
+        assert(role == 1)
+        return QVariant( self._data[i]._shopLink )
     def roleNames(self):
         return self._ROLE_MAP
 
