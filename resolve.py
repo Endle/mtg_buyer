@@ -47,12 +47,18 @@ def resolve(item:Item)->list:
     choices = [_extract(item, e) for e in elements]
     return choices
 
-def best_choice(item:Item)->Item:
+def best_choice(item:Item, block=[])->Item:
+    def legal(s):
+        for b in block:
+            if b in s:
+                return False
+        return True
     r = resolve(item)
     for p in r:
         logging.info(p)
 #闪电击 与 闪电炼击
     r = [i for i in r if item.card in i.item_name]
+    r = [i for i in r if legal(i.item_name)]
     if (len(r) == 0):
         logging.warn("Find nothing for " + str(item))
         return None

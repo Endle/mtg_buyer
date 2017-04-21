@@ -34,6 +34,7 @@ TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
 CARD_NAMES = []
 SHOP_LINKS = []
 ITEMS = []
+BLOCK_WORDS = ["token", "徽记"]
 
 def create_var_path():
     logging.warn("var_path hack for li's PC")
@@ -89,13 +90,14 @@ def generate_page(l:tuple)->str:
 import resolve
 import selenium_browser
 def search(shop_link, card_name, card_amount=1):
+    global BLOCK_WORDS
     i = Item()
     i.card = card_name
     i.shop_link = shop_link
     i.search_link = _get_url(i)
     i.html = selenium_browser.fetch(i.search_link)
 # 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
-    return resolve.best_choice(i)
+    return resolve.best_choice(i, block=BLOCK_WORDS)
 
 
 class Card(object):
@@ -121,8 +123,6 @@ def submit_data(shops:list, cards:list)->str:
     global CARD_NAMES
     SHOP_LINKS = list(shops)
     CARD_NAMES = [i.name for i in cards]
-    print(cards)
-    print(CARD_NAMES)
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
             i = search(s, c)
@@ -155,5 +155,5 @@ def run_sample():
 
 if __name__ == '__main__':
     CARD_NAMES = ["赞迪卡伙伴基定", "放出怪灵"]
-    SHOP_LINKS = ["https://shop101650459.taobao.com"]
+    SHOP_LINKS = ["https://shop101650459.taobao.com", "https://yinzhe.taobao.com"]
     run_sample()
