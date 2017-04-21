@@ -2,6 +2,8 @@ from selenium import webdriver
 import threading
 import cachetools
 import logging
+from pathlib import Path
+import os
 logger = logging.getLogger(__name__)
 
 _driver = None
@@ -16,11 +18,11 @@ def init_driver():
     if _driver:
         logger.warn("Already have a driver: {1}".format(id(_driver)))
     else:
-        try:
-            _driver = webdriver.Firefox()
-        except:
-            logger.warn("hack for Linux")
-            _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
+        p = Path( os.path.abspath(".") )
+        p = p.joinpath("geckodrivers/geckodriver_linux_amd64")
+        logger.warn("Loading driver @ " + str(p))
+        #_driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
+        _driver = webdriver.Firefox(executable_path=p)
 
 def _fetch(url:str):
     global _driver, _locker
