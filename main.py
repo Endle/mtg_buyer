@@ -97,24 +97,6 @@ def search(shop_link, card_name, card_amount=1):
 # 同一个商店，同一张卡，可能有多个商品。这里只保留标价最低的
     return resolve.best_choice(i)
 
-def run_sample():
-    global ITEMS
-    global TEMP_HTML_PAGE
-
-
-    for s in SHOP_LINKS:
-        for c in CARD_NAMES:
-            i = search(s, c)
-            if i and i.item_link:
-                ITEMS.append(i)
-            time.sleep(0.05)
-
-    selenium_browser.clean_up_before_quit()
-
-    result = ITEMS
-    html = generate_page(result)
-    with open(TEMP_HTML_PAGE, "w") as fout:
-        fout.write(html)
 
 class Card(object):
     name = ""
@@ -139,6 +121,8 @@ def submit_data(shops:list, cards:list)->str:
     global CARD_NAMES
     SHOP_LINKS = list(shops)
     CARD_NAMES = [i.name for i in cards]
+    print(cards)
+    print(CARD_NAMES)
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
             i = search(s, c)
@@ -153,7 +137,21 @@ def submit_data(shops:list, cards:list)->str:
         fout.write(html)
     return TEMP_HTML_PAGE
 
+def run_sample():
+    global ITEMS
+    global TEMP_HTML_PAGE
 
+    cards = []
+    global SHOP_LINKS
+    global CARD_NAMES
+    print(CARD_NAMES)
+    for i in CARD_NAMES:
+        c = Card()
+        c.name = i
+        c.number = 1
+        cards.append(c)
+
+    submit_data(SHOP_LINKS, cards)
 
 if __name__ == '__main__':
     CARD_NAMES = ["赞迪卡伙伴基定", "放出怪灵"]
