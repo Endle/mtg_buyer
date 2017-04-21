@@ -134,7 +134,7 @@ def submit_data(shops:list, cards:list)->str:
     logging.info( ", ".join(
         [i.name + ":" + str(i.number) for i in cards]))
 
-    TEMP_HTML_PAGE = TEMP_FOLDER + "index.html"
+    TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
     global SHOP_LINKS
     global CARD_NAMES
     SHOP_LINKS = list(shops)

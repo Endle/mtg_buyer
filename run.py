@@ -3,6 +3,7 @@
 
 import sys
 from pathlib import Path
+import pathlib
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QGuiApplication
@@ -81,7 +82,8 @@ class PyQtShopListModel(QAbstractListModel):
     def getShopListFile(self):
         '''Return a Path, showing a file path
         Guarantee that is legal'''
-        path = Path(VAR_PATH).joinpath("shop_list.txt")
+        assert isinstance(VAR_PATH, pathlib.Path)
+        path = VAR_PATH.joinpath("shop_list.txt")
         return path
 
     @pyqtSlot()
