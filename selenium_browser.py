@@ -2,6 +2,7 @@ from selenium import webdriver
 import threading
 import cachetools
 import logging
+from pathlib import Path, PurePosixPath
 logger = logging.getLogger(__name__)
 
 _driver = None
@@ -16,11 +17,34 @@ def init_driver():
     if _driver:
         logger.warn("Already have a driver: {1}".format(id(_driver)))
     else:
-        try:
-            _driver = webdriver.Firefox()
-        except:
+        import platform
+        _system = platform.system()
+        epath = "" 
+        #https://github.com/mozilla/geckodriver/releases
+        p = Path(".")
+        p = p.joinpath("geckodrivers")
+        if _system == "Windows":
+            p = p.joinpath("geckodriver-v0.14.0-win64.exe")
+     #       geckodriver-v0.14.0-win64
+            #print(p.resolve())
+            import os.path
+            #print(os.path)
+            p=p.resolve()
+            epath = str( p  )
+            #epath = epath.replace("\\", "\\\\")
+            #print( os.path.basename(epath))
+            #print(epath)
+            #epath = "/c/Users/step_/Documents/mtg_buyer/geckodrivers/geckodriver-v0.14.0-win64.exe"
+            from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+            bin = FirefoxBinary(epath)
+            #_driver = webdriver.Firefox(firefox_binary=bin)#, executable_path=p0)
+            epath = "/c/Users/step_/Documents/mtg_buyer/geckodrivers"
+            epath = r'C:\Users\step_\Documents\mtg_buyer\geckodrivers\geckodriver.exe'
+            _driver = webdriver.Firefox(executable_path=epath)
+        else:
             logger.warn("hack for Linux")
-            _driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
+            epath = "/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64"
+            _driver = webdriver.Firefox(executable_path=epath)
 
 
 def _fetch(url:str):
@@ -52,6 +76,7 @@ def clean_up_before_quit():
     _locker = None
 
 if __name__ == '__main__':
+    init_driver()
     #code = fetch('http://httpbin.org/headers')
     link = "https://s.taobao.com/search?q=%E4%BA%91%E6%95%A3+%E4%B8%87%E6%99%BA%E7%89%8C&imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20151211&ie=utf8&style=list"
     code = fetch(link)
