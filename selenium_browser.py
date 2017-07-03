@@ -80,6 +80,7 @@ if __name__ == '__main__':
     #code = fetch('http://httpbin.org/headers')
     link = "https://s.taobao.com/search?q=%E4%BA%91%E6%95%A3+%E4%B8%87%E6%99%BA%E7%89%8C&imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20151211&ie=utf8&style=list"
     code = fetch(link)
-    with open("/dev/shm/headers.html", "w") as fout:
+    #with open("/dev/shm/headers.html", "w") as fout:
+    with open(r'C:\Users\step_\Documents\mtg_buyer\headers.html', "w", encoding="utf-8") as fout:
         fout.write(code)
     clean_up_before_quit()
