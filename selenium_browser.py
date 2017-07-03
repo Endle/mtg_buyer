@@ -24,7 +24,7 @@ def init_driver():
         p = Path(".")
         p = p.joinpath("geckodrivers")
         if _system == "Windows":
-            p = p.joinpath("geckodriver-v0.14.0-win64.exe")
+            p = p.joinpath("geckodriver.exe")
      #       geckodriver-v0.14.0-win64
             #print(p.resolve())
             import os.path
@@ -38,8 +38,8 @@ def init_driver():
             from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
             bin = FirefoxBinary(epath)
             #_driver = webdriver.Firefox(firefox_binary=bin)#, executable_path=p0)
-            epath = "/c/Users/step_/Documents/mtg_buyer/geckodrivers"
-            epath = r'C:\Users\step_\Documents\mtg_buyer\geckodrivers\geckodriver.exe'
+            #epath = "/c/Users/step_/Documents/mtg_buyer/geckodrivers"
+            #epath = r'C:\Users\step_\Documents\mtg_buyer\geckodrivers\geckodriver.exe'
             _driver = webdriver.Firefox(executable_path=epath)
         else:
             logger.warn("hack for Linux")
