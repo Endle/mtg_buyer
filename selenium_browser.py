@@ -28,7 +28,7 @@ def init_driver():
             p=p.resolve()
             epath = str(p)
             #geckodriver-v0.14.0-win64.exe
-            logger.warn("Loading Firefox binary from :" + epath)
+            logger.warn("Loading Firefox binary from " + epath)
             from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
             bin = FirefoxBinary(epath)
             _driver = webdriver.Firefox(executable_path=epath)
