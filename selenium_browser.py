@@ -17,13 +17,12 @@ def init_driver():
     if _driver:
         logger.warn("Already have a driver: {1}".format(id(_driver)))
     else:
-        import platform
-        _system = platform.system()
-        epath = "" 
+        epath = ""
         #https://github.com/mozilla/geckodriver/releases
         p = Path(".")
         p = p.joinpath("geckodrivers")
-        if _system == "Windows":
+        import platform
+        if platform.system() == "Windows":
             p = p.joinpath("geckodriver.exe")
             p=p.resolve()
             epath = str(p)
