@@ -152,7 +152,7 @@ class PyQtCardListModel(QAbstractListModel):
             ret = self._data[i].name
         if role == 2:
             ret = self._data[i].number
-        logging.info("got " + str(ret))
+        logging.info("got {0} via role {1}".format(str(ret), role))
         return QVariant(ret)
     def roleNames(self):
         return self._ROLE_MAP
@@ -171,11 +171,16 @@ class submitUserInput(QObject):
     @pyqtSlot()
     def clicked(self):
         logging.info("Clicked!")
+        shops = SHOP_LIST.getStrList()
+        shops = [i.rstrip("\n ?/") for i in shops]
         result_page = submit_data(
-            SHOP_LIST.getStrList(),
+            shops,
             CARD_LIST._data)
         self.pyClear()
-        QDesktopServices.openUrl( QUrl(result_page) )
+        #FIXME wrong type
+        url = str(result_page)
+        logging.warn("open local page " + url)
+        QDesktopServices.openUrl( QUrl(url) )
 
 
 def main():
