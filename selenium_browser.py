@@ -2,8 +2,7 @@ from selenium import webdriver
 import threading
 import cachetools
 import logging
-from pathlib import Path
-import os
+from pathlib import Path, PurePosixPath
 logger = logging.getLogger(__name__)
 
 _driver = None
@@ -18,11 +17,25 @@ def init_driver():
     if _driver:
         logger.warn("Already have a driver: {1}".format(id(_driver)))
     else:
-        p = Path( os.path.abspath(".") )
-        p = p.joinpath("geckodrivers/geckodriver_linux_amd64")
-        logger.warn("Loading driver @ " + str(p))
-        #_driver = webdriver.Firefox(executable_path="/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64")
-        _driver = webdriver.Firefox(executable_path=p)
+        epath = ""
+        #https://github.com/mozilla/geckodriver/releases
+        p = Path(".")
+        p = p.joinpath("geckodrivers")
+        import platform
+        if platform.system() == "Windows":
+            p = p.joinpath("geckodriver.exe")
+            p=p.resolve()
+            epath = str(p)
+            #geckodriver-v0.14.0-win64.exe
+            logger.warn("Loading Firefox binary from " + epath)
+            from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+            bin = FirefoxBinary(epath)
+            _driver = webdriver.Firefox(executable_path=epath)
+        else:
+            logger.warn("hack for Linux")
+            epath = "/home/lizhenbo/src/mtg_buyer/geckodrivers/geckodriver_linux_amd64"
+            _driver = webdriver.Firefox(executable_path=epath)
+
 
 def _fetch(url:str):
     global _driver, _locker
@@ -53,9 +66,11 @@ def clean_up_before_quit():
     _locker = None
 
 if __name__ == '__main__':
+    init_driver()
     #code = fetch('http://httpbin.org/headers')
     link = "https://s.taobao.com/search?q=%E4%BA%91%E6%95%A3+%E4%B8%87%E6%99%BA%E7%89%8C&imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20151211&ie=utf8&style=list"
     code = fetch(link)
-    with open("/dev/shm/headers.html", "w") as fout:
+    #with open("/dev/shm/headers.html", "w") as fout:
+    with open(r'C:\Users\step_\Documents\mtg_buyer\headers.html', "w", encoding="utf-8") as fout:
         fout.write(code)
     clean_up_before_quit()

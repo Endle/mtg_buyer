@@ -27,9 +27,9 @@ class Item(object):
 
 import os
 from pathlib import Path
-HOME_PATH = Path(os.path.expanduser('~'))
+HOME_PATH = Path(os.path.expanduser('~/Documents'))
 VAR_PATH = HOME_PATH.joinpath(".mtg_buyer")
-TEMP_FOLDER = VAR_PATH.joinpath("temp")
+TEMP_FOLDER = VAR_PATH.joinpath("temp") #FIXME Unnecessary var
 TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
 CARD_NAMES = []
 SHOP_LINKS = []
@@ -59,7 +59,11 @@ def _get_url(item:Item)->str:
     ]
     return "".join(url_component)
 
+#FIXME 函数太笨重，考虑将分析数据的部分移出
+#FIXME 写入到文件时并没有正确指定编码
 def generate_page(l:tuple)->str:
+    '''Returns a str
+    HTML code for result page'''
     assert(type(l[0]) == Item)
     from yattag import Doc
     doc, tag, text = Doc().tagtext()
@@ -118,7 +122,7 @@ def submit_data(shops:list, cards:list)->str:
     logging.info( ", ".join(
         [i.name + ":" + str(i.number) for i in cards]))
 
-    TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
+    TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html") #FIXME global or local
     global SHOP_LINKS
     global CARD_NAMES
     SHOP_LINKS = list(shops)
