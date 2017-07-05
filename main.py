@@ -27,7 +27,7 @@ class Item(object):
 
 import os
 from pathlib import Path
-HOME_PATH = Path(os.path.expanduser('~'))
+HOME_PATH = Path(os.path.expanduser('~/Documents'))
 VAR_PATH = HOME_PATH.joinpath(".mtg_buyer")
 TEMP_FOLDER = VAR_PATH.joinpath("temp") #FIXME Unnecessary var
 TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
@@ -60,6 +60,7 @@ def _get_url(item:Item)->str:
     return "".join(url_component)
 
 #FIXME 函数太笨重，考虑将分析数据的部分移出
+#FIXME 写入到文件时并没有正确指定编码
 def generate_page(l:tuple)->str:
     '''Returns a str
     HTML code for result page'''
