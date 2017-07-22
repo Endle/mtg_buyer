@@ -26,20 +26,24 @@ class Item(object):
         return ret
 
 import os
+import platform
 from pathlib import Path
-HOME_PATH = Path(os.path.expanduser('~/Documents'))
+# xxxPATH 都是 pathlib 创建的
+HOME_PATH = None
+if platform.system() == 'Linux':
+    HOME_PATH = Path(os.path.expanduser('~'))
+else:
+    HOME_PATH = Path(os.path.expanduser('~/Documents'))
 VAR_PATH = HOME_PATH.joinpath(".mtg_buyer")
-TEMP_FOLDER = VAR_PATH.joinpath("temp") #FIXME Unnecessary var
-TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html")
+HTML_RESULT_PAGE = VAR_PATH.joinpath("index.html")
+
 CARD_NAMES = []
 SHOP_LINKS = []
 ITEMS = []
 BLOCK_WORDS = ["token", "徽记"]
 
 def create_var_path():
-    logging.warn("var_path hack for li's PC")
     Path(VAR_PATH).mkdir(parents=True, exist_ok=True)
-    Path(TEMP_FOLDER).mkdir(parents=True, exist_ok=True)
 create_var_path()
 
 def calc_shop_total_price(shop_link, items):
@@ -93,7 +97,7 @@ def generate_page(l:tuple)->str:
 
 import resolve
 import selenium_browser
-def search(shop_link, card_name, card_amount=1):
+def search(shop_link, card_name, card_amount=1)->Item:
     global BLOCK_WORDS
     i = Item()
     i.card = card_name
@@ -122,28 +126,31 @@ def submit_data(shops:list, cards:list)->str:
     logging.info( ", ".join(
         [i.name + ":" + str(i.number) for i in cards]))
 
-    TEMP_HTML_PAGE = TEMP_FOLDER.joinpath("index.html") #FIXME global or local
+    global HTML_RESULT_PAGE
     global SHOP_LINKS
     global CARD_NAMES
+    result = []
     SHOP_LINKS = list(shops)
     CARD_NAMES = [i.name for i in cards]
     for s in SHOP_LINKS:
         for c in CARD_NAMES:
             i = search(s, c)
             if i and i.item_link:
-                ITEMS.append(i)
+                result.append(i)
             time.sleep(0.05)
     selenium_browser.clean_up_before_quit()
 
-    result = ITEMS
+    print(len(result))
+    for i in result:
+        print(i)
     html = generate_page(result)
-    with open(TEMP_HTML_PAGE, "w") as fout:
+    with open(HTML_RESULT_PAGE, "w") as fout:
         fout.write(html)
-    return TEMP_HTML_PAGE
+    return HTML_RESULT_PAGE
 
 def run_sample():
     global ITEMS
-    global TEMP_HTML_PAGE
+    global HTML_RESULT_PAGE
 
     cards = []
     global SHOP_LINKS

@@ -1,4 +1,4 @@
-from main import Item, TEMP_FOLDER
+from main import Item
 import logging
 from bs4 import BeautifulSoup
 import copy
